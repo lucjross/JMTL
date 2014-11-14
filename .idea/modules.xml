@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Chord Progression Model.iml" filepath="$PROJECT_DIR$/Chord Progression Model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Java Music Theory Library.iml" filepath="$PROJECT_DIR$/Java Music Theory Library.iml" />
     </modules>
   </component>
 </project>

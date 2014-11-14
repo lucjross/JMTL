@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.interval;
+package main.java.org.lucjross.jmtl.interval;
 
 /**
  * Created by lucas on 11/14/2014.

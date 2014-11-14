@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.voice;
+package main.java.org.lucjross.jmtl.voice;
 
 /**
  * Created by lucas on 11/14/2014.

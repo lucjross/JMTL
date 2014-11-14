@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.progression;
+package main.java.org.lucjross.jmtl.progression;
 
 /**
  * Created by lucas on 11/14/2014.

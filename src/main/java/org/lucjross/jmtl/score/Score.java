@@ -1,7 +1,7 @@
-package main.java.org.lucjross.musictheorylib.score;
+package main.java.org.lucjross.jmtl.score;
 
-import main.java.org.lucjross.musictheorylib.measure.Measure;
-import main.java.org.lucjross.musictheorylib.voice.Voice;
+import main.java.org.lucjross.jmtl.measure.Measure;
+import main.java.org.lucjross.jmtl.voice.Voice;
 
 import java.util.List;
 import java.util.Set;

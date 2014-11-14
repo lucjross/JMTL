@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.pitch;
+package main.java.org.lucjross.jmtl.pitch;
 
 import java.util.*;
 

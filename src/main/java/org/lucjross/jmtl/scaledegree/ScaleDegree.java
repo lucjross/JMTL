@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.scaledegree;
+package main.java.org.lucjross.jmtl.scaledegree;
 
 /**
  * Created by lucas on 11/14/2014.

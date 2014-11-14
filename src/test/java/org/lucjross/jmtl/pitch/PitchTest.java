@@ -1,6 +1,6 @@
-package test.java.org.lucjross.musictheorylib.pitch;
+package test.java.org.lucjross.jmtl.pitch;
 
-import main.java.org.lucjross.musictheorylib.pitch.Pitch;
+import main.java.org.lucjross.jmtl.pitch.Pitch;
 import org.junit.Assert;
 import org.junit.Test;
 

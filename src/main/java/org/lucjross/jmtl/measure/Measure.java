@@ -1,4 +1,4 @@
-package main.java.org.lucjross.musictheorylib.measure;
+package main.java.org.lucjross.jmtl.measure;
 
 /**
  * Created by lucas on 11/14/2014.

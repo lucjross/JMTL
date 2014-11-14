@@ -1,6 +1,6 @@
-package main.java.org.lucjross.musictheorylib.scale;
+package main.java.org.lucjross.jmtl.scale;
 
-import main.java.org.lucjross.musictheorylib.interval.Interval;
+import main.java.org.lucjross.jmtl.interval.Interval;
 
 import java.util.List;
 

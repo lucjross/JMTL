@@ -1,6 +1,6 @@
-package main.java.org.lucjross.musictheorylib.progression;
+package main.java.org.lucjross.jmtl.progression;
 
-import main.java.org.lucjross.musictheorylib.chord.Chord;
+import main.java.org.lucjross.jmtl.chord.Chord;
 
 import java.util.List;
 

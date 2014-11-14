@@ -1,6 +1,6 @@
-package test.java.org.lucjross.musictheorylib.interval;
+package test.java.org.lucjross.jmtl.interval;
 
-import main.java.org.lucjross.musictheorylib.interval.Interval;
+import main.java.org.lucjross.jmtl.interval.Interval;
 import org.junit.Assert;
 import org.junit.Test;
 
