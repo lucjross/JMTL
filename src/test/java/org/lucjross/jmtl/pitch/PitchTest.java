@@ -19,7 +19,6 @@ public class PitchTest {
         for (Pitch p : Pitch.values())
         {
             Set<Pitch> equivalents = p.getEnharmonicEquivalents();
-            System.out.println(equivalents);
             allEquivalencies.add(equivalents);
         }
         Assert.assertEquals(allEquivalencies.size(), Pitch.ENHARMONIC_EQUIVALENCIES.size());
