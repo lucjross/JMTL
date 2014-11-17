@@ -16,7 +16,7 @@ public class PitchTest {
     public void test()
     {
         Set<Set<Pitch>> allEquivalencies = new HashSet<>();
-        for (Pitch p : Pitch.values())
+        for (Pitch p : Pitch.PITCHES)
         {
             Set<Pitch> equivalents = p.getEnharmonicEquivalents();
             allEquivalencies.add(equivalents);
