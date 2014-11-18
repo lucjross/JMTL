@@ -11,18 +11,6 @@ import org.junit.Test;
  */
 public class IntervalTest
 {
-//    @Test
-//    public void test()
-//    {
-//        Set<Set<Interval>> equivalencies = new HashSet<>();
-//        for (Interval interval : Interval.values())
-//        {
-//            Set<Interval> equivalents = interval.getEnharmonicEquivalents();
-//            equivalencies.add(equivalents);
-//        }
-//        Assert.assertEquals(equivalencies.size(), Interval.ENHARMONIC_EQUIVALENCIES.size());
-//    }
-
     @Test
     public void testToSimple()
     {

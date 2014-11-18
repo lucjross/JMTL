@@ -1,26 +1,65 @@
 package test.java.org.lucjross.jmtl.pitch;
 
+import main.java.org.lucjross.jmtl.interval.Interval;
+import main.java.org.lucjross.jmtl.interval.IntervalNumber;
+import main.java.org.lucjross.jmtl.interval.IntervalQuality;
+import main.java.org.lucjross.jmtl.pitch.Accidental;
 import main.java.org.lucjross.jmtl.pitch.Pitch;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by lucas on 11/14/2014.
  */
 public class PitchTest {
 
+
+
     @Test
-    public void test()
+    public void testRaiseAndLower()
     {
-        Set<Set<Pitch>> allEquivalencies = new HashSet<>();
-        for (Pitch p : Pitch.PITCHES)
+        Interval m6 = new Interval(IntervalQuality.MINOR, IntervalNumber.SIXTH);
+        Pitch gSharp = Pitch.G.alter(Accidental.SHARP);
+        Assert.assertEquals(Pitch.E, gSharp.raiseBy(m6));
+
+        Interval d4 = new Interval(IntervalQuality.P_DIM, IntervalNumber.FOURTH);
+        Assert.assertEquals(Pitch.C, gSharp.raiseBy(d4));
+
+        Interval M9 = new Interval(IntervalQuality.MAJOR, IntervalNumber.NINTH);
+        Assert.assertEquals(Pitch.A.alter(Accidental.SHARP), gSharp.raiseBy(M9));
+
+        Pitch aFlat = Pitch.A.alter(Accidental.FLAT);
+        Assert.assertEquals(Pitch.C, aFlat.lowerBy(m6));
+
+        Assert.assertEquals(Pitch.E, aFlat.lowerBy(d4));
+
+        Assert.assertEquals(Pitch.G.alter(Accidental.FLAT), aFlat.lowerBy(M9));
+
+
+        
+        /* nonsensical operations */
+
+        Pitch bDoubleSharp = Pitch.B.alter(Accidental.DOUBLE_SHARP);
+        try
         {
-            Set<Pitch> equivalents = p.getEnharmonicEquivalents();
-            allEquivalencies.add(equivalents);
+            bDoubleSharp.raiseBy(M9);
+            Assert.fail();
         }
-        Assert.assertEquals(allEquivalencies.size(), Pitch.ENHARMONIC_EQUIVALENCIES.size());
+        catch (IllegalArgumentException e)
+        {
+            // ok
+        }
+
+        Pitch fDoubleFlat = Pitch.F.alter(Accidental.DOUBLE_FLAT);
+        Interval M3 = new Interval(IntervalQuality.MAJOR, IntervalNumber.THIRD);
+        try
+        {
+            fDoubleFlat.lowerBy(M3);
+            Assert.fail();
+        }
+        catch (IllegalArgumentException e)
+        {
+            // ok
+        }
     }
 }

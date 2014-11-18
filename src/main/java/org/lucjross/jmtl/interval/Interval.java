@@ -66,6 +66,11 @@ public class Interval {
         return quality;
     }
 
+    public IntervalNumber getNumber()
+    {
+        return number;
+    }
+
     public int getHalfStepsDistance()
     {
         return halfStepsDistance;
@@ -117,11 +122,11 @@ public class Interval {
 
         Interval interval = (Interval) o;
 
-        if (! number.equals(interval.number))
+        if (number != interval.number)
         {
             return false;
         }
-        if (! quality.equals(interval.quality))
+        if (quality != interval.quality)
         {
             return false;
         }

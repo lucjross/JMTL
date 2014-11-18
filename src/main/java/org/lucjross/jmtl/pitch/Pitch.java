@@ -8,39 +8,7 @@ import java.util.*;
 /**
  * Created by lucas on 11/14/2014.
  */
-public class Pitch implements Comparable<Pitch> {
-//    C(0),
-//        C_FLAT(11, C),
-//        C_SHARP(1, C),
-//        C_DOUBLESHARP(2, C),
-//    D(2),
-//        D_DOUBLEFLAT(0, D),
-//        D_FLAT(1, D),
-//        D_SHARP(3, D),
-//        D_DOUBLESHARP(4, D),
-//    E(4),
-//        E_DOUBLEFLAT(2, E),
-//        E_FLAT(3, E),
-//        E_SHARP(5, E),
-//    F(5),
-//        F_FLAT(4, F),
-//        F_SHARP(6, F),
-//        F_DOUBLESHARP(7, F),
-//    G(7),
-//        G_DOUBLEFLAT(5, G),
-//        G_FLAT(6, G),
-//        G_SHARP(8, G),
-//        G_DOUBLESHARP(9, G),
-//    A(9),
-//        A_DOUBLEFLAT(7, A),
-//        A_FLAT(8, A),
-//        A_SHARP(10, A),
-//        A_DOUBLESHARP(11, A),
-//    B(11),
-//        B_DOUBLEFLAT(9, B),
-//        B_FLAT(10, B),
-//        B_SHARP(0, B);
-
+public class Pitch {
     public static final Pitch C = new Pitch('C', 0);
     public static final Pitch D = new Pitch('D', 2);
     public static final Pitch E = new Pitch('E', 4);
@@ -51,12 +19,6 @@ public class Pitch implements Comparable<Pitch> {
 
     public static final List<Pitch> PITCHES =
             Collections.unmodifiableList(Arrays.asList(C, D, E, F, G, A, B));
-//    static
-//    {
-//        List<Pitch> pitchList = new CircularArrayList<>(7);
-//        pitchList.addAll(Arrays.asList(C, D, E, F, G, A, B));
-//        PITCHES = Collections.unmodifiableList(pitchList);
-//    }
 
     public static final Map<Integer, Set<Pitch>> ENHARMONIC_EQUIVALENCIES;
     static
@@ -64,16 +26,16 @@ public class Pitch implements Comparable<Pitch> {
         Map<Integer, Set<Pitch>> equivalencies = new HashMap<>(12);
         for (Pitch p : PITCHES)
         {
-            for (int i = -2; i <= 2; i++)
+            for (Accidental a : Accidental.values())
             {
-                Pitch altered = p.alter(i);
+                final Pitch altered = p.alter(a);
                 Set<Pitch> equivalents = equivalencies.get(altered.halfStepsUpFromC);
                 if (equivalents == null)
                 {
                     equivalents = new HashSet<>();
-                    equivalencies.put(p.halfStepsUpFromC, equivalents);
+                    equivalencies.put(altered.halfStepsUpFromC, equivalents);
                 }
-                equivalents.add(p);
+                equivalents.add(altered);
             }
         }
         ENHARMONIC_EQUIVALENCIES = Collections.unmodifiableMap(equivalencies);
@@ -85,24 +47,74 @@ public class Pitch implements Comparable<Pitch> {
 
     private final Pitch basePitch;
 
+    private final Accidental accidental;
+
     private Pitch(char letter, int halfStepsUpFromC)
     {
         this.letter = letter;
         this.halfStepsUpFromC = halfStepsUpFromC;
         basePitch = this;
+        accidental = Accidental.NATURAL;
     }
 
-    private Pitch(int halfStepsUpFromC, Pitch basePitch)
+    private Pitch(Pitch basePitch, Accidental accidental)
     {
+        if (! PITCHES.contains(basePitch))
+        {
+            throw new IllegalArgumentException(basePitch.toString());
+        }
+
         letter = basePitch.letter;
-        this.halfStepsUpFromC = halfStepsUpFromC;
+        int halfStepsUpFromC = basePitch.halfStepsUpFromC + accidental.getModifier();
+        if (halfStepsUpFromC < 0)
+        {
+            this.halfStepsUpFromC = halfStepsUpFromC + 12;
+        }
+        else if (halfStepsUpFromC > 11)
+        {
+            this.halfStepsUpFromC = halfStepsUpFromC - 12;
+        }
+        else
+        {
+            this.halfStepsUpFromC = halfStepsUpFromC;
+        }
+
         this.basePitch = basePitch;
+        this.accidental = accidental;
     }
 
     @Override
-    public int compareTo(Pitch o)
+    public boolean equals(Object o)
     {
-        return halfStepsUpFromC - o.halfStepsUpFromC;
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Pitch pitch = (Pitch) o;
+
+        if (letter != pitch.letter)
+        {
+            return false;
+        }
+        if (accidental != pitch.accidental)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = (int) letter;
+        result = 31 * result + (accidental != null ? accidental.hashCode() : 0);
+        return result;
     }
 
     public char getLetter()
@@ -120,109 +132,107 @@ public class Pitch implements Comparable<Pitch> {
         return basePitch;
     }
 
+    public Accidental getAccidental()
+    {
+        return accidental;
+    }
+
     public Set<Pitch> getEnharmonicEquivalents()
     {
         return ENHARMONIC_EQUIVALENCIES.get(halfStepsUpFromC);
     }
 
-    public Pitch doubleFlat()
+    public Pitch alter(Accidental accidental)
     {
-        int halfStepsUpFromC = basePitch.halfStepsUpFromC - 2;
-        if (halfStepsUpFromC < 0)
-        {
-            halfStepsUpFromC += 12;
-        }
-        return new Pitch(halfStepsUpFromC, basePitch);
+        return new Pitch(basePitch, accidental);
     }
 
-    public Pitch flat()
+    public Pitch raiseBy(Interval interval)
     {
-        int halfStepsUpFromC = basePitch.halfStepsUpFromC - 1;
-        if (halfStepsUpFromC < 0)
-        {
-            halfStepsUpFromC += 12;
-        }
-        return new Pitch(halfStepsUpFromC, basePitch);
-    }
+        // The number of scale degrees to raise by.
+        // E.g., for the interval of a second, steps == 1; for a seventh, steps == 6.
+        int steps = interval.getNumber().ordinal();
 
-    public Pitch natural()
-    {
-        return new Pitch(basePitch.halfStepsUpFromC, basePitch);
-    }
-
-    public Pitch sharp()
-    {
-        int halfStepsUpFromC = basePitch.halfStepsUpFromC + 1;
-        if (halfStepsUpFromC > 11)
+        // Move to the upper base pitch.
+        Pitch raisedBasePitch = basePitch;
+        for (int i = 0; i < steps; i++)
         {
-            halfStepsUpFromC -= 12;
-        }
-        return new Pitch(halfStepsUpFromC, basePitch);
-    }
-
-    public Pitch doubleSharp()
-    {
-        int halfStepsUpFromC = basePitch.halfStepsUpFromC + 2;
-        if (halfStepsUpFromC > 11)
-        {
-            halfStepsUpFromC -= 12;
-        }
-        return new Pitch(halfStepsUpFromC, basePitch);
-    }
-
-    public Pitch alter(int halfSteps)
-    {
-        if (halfSteps < -2 || halfSteps > 2)
-        {
-            throw new IllegalArgumentException("halfSteps=" + halfSteps);
+            raisedBasePitch = raisedBasePitch.nextBasePitch();
         }
 
-        switch (halfSteps)
+        // Get the correct pitch based upon the new half step distance from C.
+        int raisedHalfStepsUpFromC = halfStepsUpFromC + interval.getHalfStepsDistance();
+        while (raisedHalfStepsUpFromC > 11)
         {
-            case -2:
-                return doubleFlat();
-            case -1:
-                return flat();
-            case 0:
-                return natural();
-            case 1:
-                return sharp();
-            default:
-                return doubleSharp();
+            raisedHalfStepsUpFromC -= 12;
         }
+        Set<Pitch> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(raisedHalfStepsUpFromC);
+        for (Pitch p : enharmonicEquivalents)
+        {
+            if (p.basePitch.equals(raisedBasePitch))
+            {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException(interval.toString());
     }
 
-    public Pitch add(Interval interval)
+    public Pitch lowerBy(Interval interval)
     {
-        return null;
-    }
+        // The number of scale degrees to lower by.
+        // E.g., for the interval of a second, steps == 1; for a seventh, steps == 6.
+        int steps = interval.getNumber().ordinal();
 
-    public Pitch subtract(Interval interval)
-    {
-        return null;
-    }
+        // Move to the lower base pitch.
+        Pitch loweredBasePitch = basePitch;
+        for (int i = 0; i < steps; i++)
+        {
+            loweredBasePitch = loweredBasePitch.previousBasePitch();
+        }
 
-//    public Interval intervalTo(Pitch upper)
-//    {
-//        Pitch p = this;
-//        int steps = 0;
-//        while (p != upper.basePitch)
-//        {
-//            p = p.nextBasePitch();
-//            steps++;
-//        }
-//        final IntervalNumber number = IntervalNumber.values()[steps];
-//
-//
-//    }
+        // Get the correct pitch based upon the new half step distance from C.
+        int loweredHalfStepsUpFromC = halfStepsUpFromC - interval.getHalfStepsDistance();
+        while (loweredHalfStepsUpFromC < 0)
+        {
+            loweredHalfStepsUpFromC += 12;
+        }
+        Set<Pitch> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(loweredHalfStepsUpFromC);
+        for (Pitch p : enharmonicEquivalents)
+        {
+            if (p.basePitch.equals(loweredBasePitch))
+            {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException(interval.toString());
+    }
 
     public Pitch nextBasePitch()
     {
-        int index = PITCHES.indexOf(this) + 1;
+        int index = PITCHES.indexOf(basePitch) + 1;
         if (index == PITCHES.size())
         {
             index = 0;
         }
         return PITCHES.get(index);
+    }
+
+    public Pitch previousBasePitch()
+    {
+        int index = PITCHES.indexOf(basePitch) - 1;
+        if (index < 0)
+        {
+            index = PITCHES.size() - 1;
+        }
+        return PITCHES.get(index);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Pitch{" +
+                "letter=" + letter +
+                ", accidental=" + accidental +
+                '}';
     }
 }
