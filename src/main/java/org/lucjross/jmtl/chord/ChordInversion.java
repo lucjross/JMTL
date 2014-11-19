@@ -59,6 +59,9 @@ public enum ChordInversion
                         isSecondInversion(c) ? SECOND_INVERSION : null;
             case FOURTH:
                 return isSecondInversion(c) ? SECOND_INVERSION : null;
+            case FIFTH:
+                return isRootPosition(c) ? ROOT_POSITION :
+                        isFirstInversion(c) ? FIRST_INVERSION : null;
             default:
                 return null;
         }
