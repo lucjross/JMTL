@@ -1,8 +1,5 @@
 package main.java.org.lucjross.jmtl.pitch;
 
-import main.java.org.lucjross.jmtl.interval.IntervalVector;
-
-import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -23,9 +20,9 @@ public class PitchSet extends TreeSet<Pitch>
         return root;
     }
 
-//    public IntervalVector toIntervalVector()
+//    public ClosedIntervalSequence toIntervalVector()
 //    {
-//        IntervalVector iv = new IntervalVector();
+//        ClosedIntervalSequence iv = new ClosedIntervalSequence();
 //        if (size() < 2)
 //        {
 //            return iv;

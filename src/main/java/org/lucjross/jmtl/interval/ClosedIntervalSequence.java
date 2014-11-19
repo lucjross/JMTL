@@ -10,14 +10,14 @@ import java.util.TreeSet;
 /**
  * Created by lucas on 11/18/2014.
  */
-public class IntervalVector extends LinkedList<Interval>
+public class ClosedIntervalSequence extends LinkedList<Interval>
 {
-    public IntervalVector(Interval... intervals)
+    public ClosedIntervalSequence(Interval... intervals)
     {
         this(Arrays.asList(intervals));
     }
 
-    public IntervalVector(List<Interval> intervals)
+    public ClosedIntervalSequence(List<Interval> intervals)
     {
         SortedSet<Interval> componentIntervals = new TreeSet<>();
 
