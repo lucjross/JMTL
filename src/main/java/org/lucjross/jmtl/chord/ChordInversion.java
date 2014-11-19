@@ -25,16 +25,26 @@ public enum ChordInversion
     }
 
     /**
-     * Returns a {@code ChordInversion} based upon a conventional interpretation
-     * of a sequence of musical intervals. There must be at least two and no
-     * more than three intervals in the specified interval sequence. If the
-     * interval sequence cannot be interpreted as a triad or seven chord,
-     * {@code null} will be returned. Omission of intermediate intervals from
-     * the specified sequence may result in a non-null result in cases where
-     * the omission does not cause ambiguity; those cases are limited to
-     * omitting the fifth in a root position, first-inversion, or third-
-     * inversion seven chord, and omitting the third in a root position,
-     * second-inversion, or third-inversion seven chord.
+     * Returns a {@code ChordInversion} based upon a limited, conventional
+     * interpretation of a sequence of musical intervals. The specified
+     * interval sequence must express the intervallic content of some pitch set
+     * with at least three and no more than four pitches and therefore must have
+     * size > 2. Only interval numbers are considered, which means that an
+     * enharmonic intersection of two non-connected interval endpoints does not
+     * result in a reduction of two intervals to a single interval. For
+     * example, {@code min 6th + dim 4th} is interpreted as a third-inversion
+     * seven chord, not as a single minor sixth interval with the upper
+     * interval discarded.
+     *
+     * <p>If the interval sequence cannot be interpreted as a triad or seven
+     * chord, {@code null} will be returned.
+     *
+     * <p>Omission of intermediate intervals from the specified sequence may
+     * result in a non-null result in cases where the omission does not cause
+     * ambiguity; those cases are limited to omitting the fifth in a root
+     * position, first-inversion, or third-inversion seven chord, and
+     * omitting the third in a root position, second-inversion, or third-
+     * inversion seven chord.
      *
      * @param  intervals An interval sequence.
      * @return A {@code ChordInversion}.
