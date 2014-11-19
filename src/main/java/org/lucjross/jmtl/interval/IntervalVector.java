@@ -2,48 +2,66 @@ package main.java.org.lucjross.jmtl.interval;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
- * Created by lucas on 11/14/2014.
+ * Created by lucas on 11/18/2014.
  */
-public class IntervalVector extends ArrayList<Interval>
+public class IntervalVector extends LinkedList<Interval>
 {
-//    public static final IntervalVector MAJ = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MAJOR_THIRD, Interval.FIFTH));
-//
-//    public static final IntervalVector MIN = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MINOR_THIRD, Interval.FIFTH));
-//
-//    public static final IntervalVector AUG = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MAJOR_THIRD, Interval.AUG_FIFTH));
-//
-//    public static final IntervalVector DIM = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MINOR_THIRD, Interval.DIM_FIFTH));
-//
-//    public static final IntervalVector MAJ_7 = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MAJOR_THIRD, Interval.FIFTH, Interval.MAJOR_SEVENTH));
-//
-//    public static final IntervalVector MAJ_MIN_7 = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MAJOR_THIRD, Interval.FIFTH, Interval.MINOR_SEVENTH));
-//
-//    public static final IntervalVector MIN_7 = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MINOR_THIRD, Interval.FIFTH, Interval.MINOR_SEVENTH));
-//
-//    public static final IntervalVector HALF_DIM_7 = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MINOR_THIRD, Interval.DIM_FIFTH, Interval.MINOR_SEVENTH));
-//
-//    public static final IntervalVector DIM_7 = (IntervalVector) Collections.unmodifiableList(
-//            new IntervalVector(Interval.MINOR_THIRD, Interval.DIM_FIFTH, Interval.DIM_SEVENTH));
-//
-//    private IntervalVector(Interval... componentIntervals)
-//    {
-//        super(componentIntervals.length);
-//        addAll(Arrays.asList(componentIntervals));
-//    }
-//
-//    public IntervalVector()
-//    {
-//        super();
-//    }
+    public IntervalVector(Interval... intervals)
+    {
+        this(Arrays.asList(intervals));
+    }
+
+    public IntervalVector(List<Interval> intervals)
+    {
+        SortedSet<Interval> componentIntervals = new TreeSet<>();
+
+        for (int i = intervals.size() - 1; i >= 0; i--)
+        {
+            int numberDistance = 0;
+            int halfStepsDistance = 0;
+            for (int j = 0; j <= i; j++)
+            {
+                numberDistance += intervals.get(j).getNumber().ordinal();
+                halfStepsDistance += intervals.get(j).getHalfStepsDistance();
+            }
+            while (numberDistance > 6)
+            {
+                numberDistance -= 7;
+            }
+            while (halfStepsDistance > 11)
+            {
+                halfStepsDistance -= 12;
+            }
+
+            IntervalNumber number = IntervalNumber.values()[numberDistance];
+            IntervalQualityType type = number.getIntervalQualityType();
+            for (IntervalQuality q : IntervalQuality.values())
+            {
+                if (type == q.getIntervalQualityType())
+                {
+                    Interval interval = new Interval(q, number);
+                    if (halfStepsDistance == interval.getHalfStepsDistance())
+                    {
+                        componentIntervals.add(interval);
+                        break;
+                    }
+                }
+            }
+        }
+
+        componentIntervals.remove(new Interval(IntervalQuality.PERFECT, IntervalNumber.UNISON));
+
+        List<Interval> list = new ArrayList<>(componentIntervals);
+        for (int i = list.size() - 1; i > 0; i--)
+        {
+            list.set(i, list.get(i).subtract(list.get(i - 1)));
+        }
+        addAll(list);
+    }
 }

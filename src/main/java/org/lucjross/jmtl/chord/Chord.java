@@ -1,33 +1,22 @@
 package main.java.org.lucjross.jmtl.chord;
 
-import main.java.org.lucjross.jmtl.interval.IntervalVector;
+import main.java.org.lucjross.jmtl.interval.Interval;
 import main.java.org.lucjross.jmtl.note.Note;
-import main.java.org.lucjross.jmtl.pitch.PitchSet;
+
+import java.util.List;
 
 /**
  * Created by lucas on 11/14/2014.
  */
-public class Chord
+public abstract class Chord
 {
-    private final IntervalVector intervalVector;
+    protected final List<Interval> intervals;
 
-    private final PitchSet pitchSet;
+    protected final Note bass;
 
-    private final Note root;
-
-    public Chord(IntervalVector intervalVector, Note root)
+    protected Chord(List<Interval> intervals, Note bass)
     {
-        this.intervalVector = intervalVector;
-        this.root = root;
-
-        this.pitchSet = null;
-    }
-
-    public Chord(PitchSet pitchSet, Note root)
-    {
-        this.pitchSet = pitchSet;
-        this.root = root;
-
-        this.intervalVector = null;
+        this.intervals = intervals;
+        this.bass = bass;
     }
 }

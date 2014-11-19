@@ -1,11 +1,9 @@
 package main.java.org.lucjross.jmtl.interval;
 
-import java.util.Objects;
-
 /**
  * Created by lucas on 11/14/2014.
  */
-public class Interval {
+public class Interval implements Comparable<Interval> {
     private final IntervalQuality quality;
 
     private final IntervalNumber number;
@@ -101,11 +99,22 @@ public class Interval {
         return new Interval(quality, number.getSimpleEquivalent());
     }
 
-    public Interval inversion()
+    public Interval toInversion()
     {
         final IntervalNumber inversionNumber = number.inversion();
         final IntervalQuality inversionQuality = quality.inversion();
         return new Interval(inversionQuality, inversionNumber);
+    }
+
+    @Override
+    public int compareTo(Interval o)
+    {
+        int comparison = number.compareTo(o.number);
+        if (comparison == 0)
+        {
+            comparison = quality.compareTo(o.quality);
+        }
+        return comparison;
     }
 
     @Override
@@ -149,5 +158,55 @@ public class Interval {
                 "quality=" + quality +
                 ", number=" + number +
                 '}';
+    }
+
+    public Interval add(Interval a)
+    {
+        int numberSum = number.ordinal() + a.number.ordinal();
+        if (numberSum > IntervalNumber.values().length - 1)
+        {
+            throw new IllegalArgumentException(a.toString());
+        }
+        int halfStepsSum = halfStepsDistance + a.halfStepsDistance;
+
+        IntervalNumber intervalNumber = IntervalNumber.values()[numberSum];
+        for (IntervalQuality q : IntervalQuality.values())
+        {
+            if (intervalNumber.getIntervalQualityType() == q.getIntervalQualityType())
+            {
+                Interval interval = new Interval(q, intervalNumber);
+                if (halfStepsSum == interval.getHalfStepsDistance())
+                {
+                    return interval;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException(a.toString());
+    }
+
+    public Interval subtract(Interval a)
+    {
+        int numberDiff = number.ordinal() - a.number.ordinal();
+        if (numberDiff < 0)
+        {
+            throw new IllegalArgumentException(a.toString());
+        }
+        int halfStepsDiff = halfStepsDistance - a.halfStepsDistance;
+
+        IntervalNumber intervalNumber = IntervalNumber.values()[numberDiff];
+        for (IntervalQuality q : IntervalQuality.values())
+        {
+            if (intervalNumber.getIntervalQualityType() == q.getIntervalQualityType())
+            {
+                Interval interval = new Interval(q, intervalNumber);
+                if (halfStepsDiff == interval.getHalfStepsDistance())
+                {
+                    return interval;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException(a.toString());
     }
 }

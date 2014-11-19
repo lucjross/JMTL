@@ -73,6 +73,16 @@ public enum IntervalNumber
         return simpleEquivalent;
     }
 
+//    public int getHalfStepsDistance(IntervalQuality intervalQuality)
+//    {
+//        if (intervalQuality.getIntervalQualityType() != getIntervalQualityType())
+//        {
+//            throw new IllegalArgumentException(intervalQuality.toString());
+//        }
+//
+//        if (intervalQuality.compareTo(IntervalQuality.MAJOR) >= 0 )
+//    }
+
     public int getMinorHalfStepsDistance()
     {
         if (! intervalQualityType.equals(IntervalQualityType.MAJOR_MINOR))
