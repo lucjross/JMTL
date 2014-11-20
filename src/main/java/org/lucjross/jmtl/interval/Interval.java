@@ -102,7 +102,7 @@ public class Interval implements Comparable<Interval> {
     public Interval toInversion()
     {
         final IntervalNumber inversionNumber = number.inversion();
-        final IntervalQuality inversionQuality = quality.inversion();
+        final IntervalQuality inversionQuality = quality.toInversion();
         return new Interval(inversionQuality, inversionNumber);
     }
 

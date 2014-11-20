@@ -1,35 +1,35 @@
 package main.java.org.lucjross.jmtl.pitch;
 
 import main.java.org.lucjross.jmtl.interval.Interval;
-import main.java.org.lucjross.jmtl.interval.IntervalNumber;
 
 import java.util.*;
 
 /**
  * Created by lucas on 11/14/2014.
  */
-public class Pitch {
-    public static final Pitch C = new Pitch('C', 0);
-    public static final Pitch D = new Pitch('D', 2);
-    public static final Pitch E = new Pitch('E', 4);
-    public static final Pitch F = new Pitch('F', 5);
-    public static final Pitch G = new Pitch('G', 7);
-    public static final Pitch A = new Pitch('A', 9);
-    public static final Pitch B = new Pitch('B', 11);
+public class PitchClass
+{
+    public static final PitchClass C = new PitchClass('C', 0);
+    public static final PitchClass D = new PitchClass('D', 2);
+    public static final PitchClass E = new PitchClass('E', 4);
+    public static final PitchClass F = new PitchClass('F', 5);
+    public static final PitchClass G = new PitchClass('G', 7);
+    public static final PitchClass A = new PitchClass('A', 9);
+    public static final PitchClass B = new PitchClass('B', 11);
 
-    public static final List<Pitch> PITCHES =
+    public static final List<PitchClass> PITCH_CLASSES =
             Collections.unmodifiableList(Arrays.asList(C, D, E, F, G, A, B));
 
-    public static final Map<Integer, Set<Pitch>> ENHARMONIC_EQUIVALENCIES;
+    public static final Map<Integer, Set<PitchClass>> ENHARMONIC_EQUIVALENCIES;
     static
     {
-        Map<Integer, Set<Pitch>> equivalencies = new HashMap<>(12);
-        for (Pitch p : PITCHES)
+        Map<Integer, Set<PitchClass>> equivalencies = new HashMap<>(12);
+        for (PitchClass p : PITCH_CLASSES)
         {
             for (Accidental a : Accidental.values())
             {
-                final Pitch altered = p.alter(a);
-                Set<Pitch> equivalents = equivalencies.get(altered.halfStepsUpFromC);
+                final PitchClass altered = p.alter(a);
+                Set<PitchClass> equivalents = equivalencies.get(altered.halfStepsUpFromC);
                 if (equivalents == null)
                 {
                     equivalents = new HashSet<>();
@@ -45,27 +45,27 @@ public class Pitch {
 
     private final int halfStepsUpFromC;
 
-    private final Pitch basePitch;
+    private final PitchClass basePitchClass;
 
     private final Accidental accidental;
 
-    private Pitch(char letter, int halfStepsUpFromC)
+    private PitchClass(char letter, int halfStepsUpFromC)
     {
         this.letter = letter;
         this.halfStepsUpFromC = halfStepsUpFromC;
-        basePitch = this;
+        basePitchClass = this;
         accidental = Accidental.NATURAL;
     }
 
-    private Pitch(Pitch basePitch, Accidental accidental)
+    private PitchClass(PitchClass basePitchClass, Accidental accidental)
     {
-        if (! PITCHES.contains(basePitch))
+        if (! PITCH_CLASSES.contains(basePitchClass))
         {
-            throw new IllegalArgumentException(basePitch.toString());
+            throw new IllegalArgumentException(basePitchClass.toString());
         }
 
-        letter = basePitch.letter;
-        int halfStepsUpFromC = basePitch.halfStepsUpFromC + accidental.getModifier();
+        letter = basePitchClass.letter;
+        int halfStepsUpFromC = basePitchClass.halfStepsUpFromC + accidental.getModifier();
         if (halfStepsUpFromC < 0)
         {
             this.halfStepsUpFromC = halfStepsUpFromC + 12;
@@ -79,7 +79,7 @@ public class Pitch {
             this.halfStepsUpFromC = halfStepsUpFromC;
         }
 
-        this.basePitch = basePitch;
+        this.basePitchClass = basePitchClass;
         this.accidental = accidental;
     }
 
@@ -95,13 +95,13 @@ public class Pitch {
             return false;
         }
 
-        Pitch pitch = (Pitch) o;
+        PitchClass pitchClass = (PitchClass) o;
 
-        if (letter != pitch.letter)
+        if (letter != pitchClass.letter)
         {
             return false;
         }
-        if (accidental != pitch.accidental)
+        if (accidental != pitchClass.accidental)
         {
             return false;
         }
@@ -127,9 +127,9 @@ public class Pitch {
         return halfStepsUpFromC;
     }
 
-    public Pitch getBasePitch()
+    public PitchClass getBasePitchClass()
     {
-        return basePitch;
+        return basePitchClass;
     }
 
     public Accidental getAccidental()
@@ -137,24 +137,24 @@ public class Pitch {
         return accidental;
     }
 
-    public Set<Pitch> getEnharmonicEquivalents()
+    public Set<PitchClass> getEnharmonicEquivalents()
     {
         return ENHARMONIC_EQUIVALENCIES.get(halfStepsUpFromC);
     }
 
-    public Pitch alter(Accidental accidental)
+    public PitchClass alter(Accidental accidental)
     {
-        return new Pitch(basePitch, accidental);
+        return new PitchClass(basePitchClass, accidental);
     }
 
-    public Pitch raiseBy(Interval interval)
+    public PitchClass raiseBy(Interval interval)
     {
         // The number of scale degrees to raise by.
         // E.g., for the interval of a second, steps == 1; for a seventh, steps == 6.
         int steps = interval.getNumber().ordinal();
 
         // Move to the upper base pitch.
-        Pitch raisedBasePitch = basePitch;
+        PitchClass raisedBasePitch = basePitchClass;
         for (int i = 0; i < steps; i++)
         {
             raisedBasePitch = raisedBasePitch.nextBasePitch();
@@ -166,10 +166,10 @@ public class Pitch {
         {
             raisedHalfStepsUpFromC -= 12;
         }
-        Set<Pitch> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(raisedHalfStepsUpFromC);
-        for (Pitch p : enharmonicEquivalents)
+        Set<PitchClass> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(raisedHalfStepsUpFromC);
+        for (PitchClass p : enharmonicEquivalents)
         {
-            if (p.basePitch.equals(raisedBasePitch))
+            if (p.basePitchClass.equals(raisedBasePitch))
             {
                 return p;
             }
@@ -177,17 +177,17 @@ public class Pitch {
         throw new IllegalArgumentException(interval.toString());
     }
 
-    public Pitch lowerBy(Interval interval)
+    public PitchClass lowerBy(Interval interval)
     {
         // The number of scale degrees to lower by.
         // E.g., for the interval of a second, steps == 1; for a seventh, steps == 6.
         int steps = interval.getNumber().ordinal();
 
         // Move to the lower base pitch.
-        Pitch loweredBasePitch = basePitch;
+        PitchClass loweredBasePitchClass = basePitchClass;
         for (int i = 0; i < steps; i++)
         {
-            loweredBasePitch = loweredBasePitch.previousBasePitch();
+            loweredBasePitchClass = loweredBasePitchClass.previousBasePitch();
         }
 
         // Get the correct pitch based upon the new half step distance from C.
@@ -196,10 +196,10 @@ public class Pitch {
         {
             loweredHalfStepsUpFromC += 12;
         }
-        Set<Pitch> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(loweredHalfStepsUpFromC);
-        for (Pitch p : enharmonicEquivalents)
+        Set<PitchClass> enharmonicEquivalents = ENHARMONIC_EQUIVALENCIES.get(loweredHalfStepsUpFromC);
+        for (PitchClass p : enharmonicEquivalents)
         {
-            if (p.basePitch.equals(loweredBasePitch))
+            if (p.basePitchClass.equals(loweredBasePitchClass))
             {
                 return p;
             }
@@ -207,30 +207,30 @@ public class Pitch {
         throw new IllegalArgumentException(interval.toString());
     }
 
-    public Pitch nextBasePitch()
+    public PitchClass nextBasePitch()
     {
-        int index = PITCHES.indexOf(basePitch) + 1;
-        if (index == PITCHES.size())
+        int index = PITCH_CLASSES.indexOf(basePitchClass) + 1;
+        if (index == PITCH_CLASSES.size())
         {
             index = 0;
         }
-        return PITCHES.get(index);
+        return PITCH_CLASSES.get(index);
     }
 
-    public Pitch previousBasePitch()
+    public PitchClass previousBasePitch()
     {
-        int index = PITCHES.indexOf(basePitch) - 1;
+        int index = PITCH_CLASSES.indexOf(basePitchClass) - 1;
         if (index < 0)
         {
-            index = PITCHES.size() - 1;
+            index = PITCH_CLASSES.size() - 1;
         }
-        return PITCHES.get(index);
+        return PITCH_CLASSES.get(index);
     }
 
     @Override
     public String toString()
     {
-        return "Pitch{" +
+        return "PitchClass{" +
                 "letter=" + letter +
                 ", accidental=" + accidental +
                 '}';

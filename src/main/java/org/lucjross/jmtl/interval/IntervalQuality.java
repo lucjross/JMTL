@@ -50,88 +50,61 @@ public enum IntervalQuality
         return halfStepsModifier;
     }
 
-    public IntervalQuality inversion()
+    public IntervalQuality toInversion()
     {
-        switch (this)
+        if (compareTo(MM_DOUBLY_AUG) <= 0)
         {
-            case MM_DOUBLY_DIM:
-                return MM_DOUBLY_AUG;
-            case MM_DIM:
-                return MM_AUG;
-            case MINOR:
-                return MAJOR;
-            case MAJOR:
-                return MINOR;
-            case MM_AUG:
-                return MM_DIM;
-            case MM_DOUBLY_AUG:
-                return MM_DOUBLY_DIM;
-            case P_DOUBLY_DIM:
-                return P_DOUBLY_AUG;
-            case P_DIM:
-                return P_AUG;
-            case PERFECT:
-                return PERFECT;
-            case P_AUG:
-                return P_DIM;
-            case P_DOUBLY_AUG:
-                return P_DOUBLY_DIM;
-            default:
-                return null;
+            return MM_QUALITIES.get(
+                    MM_QUALITIES.size() - 1 - MM_QUALITIES.indexOf(this));
+        }
+        else
+        {
+            return P_QUALITIES.get(
+                    P_QUALITIES.size() - 1 - P_QUALITIES.indexOf(this));
         }
     }
 
     public IntervalQuality lower()
     {
-        switch (this)
+        if (compareTo(MM_DOUBLY_AUG) <= 0)
         {
-            case MM_DIM:
-                return MM_DOUBLY_DIM;
-            case MINOR:
-                return MM_DIM;
-            case MAJOR:
-                return MINOR;
-            case MM_AUG:
-                return MAJOR;
-            case MM_DOUBLY_AUG:
-                return MM_AUG;
-            case P_DIM:
-                return P_DOUBLY_DIM;
-            case PERFECT:
-                return P_DIM;
-            case P_AUG:
-                return PERFECT;
-            case P_DOUBLY_AUG:
-                return P_AUG;
-            default:
-                return null;
+            int mmIndex = MM_QUALITIES.indexOf(this);
+            if (mmIndex == 0)
+            {
+                throw new IllegalStateException();
+            }
+            return MM_QUALITIES.get(mmIndex - 1);
+        }
+        else
+        {
+            int pIndex = P_QUALITIES.indexOf(this);
+            if (pIndex == 0)
+            {
+                throw new IllegalStateException();
+            }
+            return P_QUALITIES.get(pIndex - 1);
         }
     }
 
     public IntervalQuality raise()
     {
-        switch (this)
+        if (compareTo(MM_DOUBLY_AUG) <= 0)
         {
-            case MM_DOUBLY_DIM:
-                return MM_DIM;
-            case MM_DIM:
-                return MINOR;
-            case MINOR:
-                return MAJOR;
-            case MAJOR:
-                return MM_AUG;
-            case MM_AUG:
-                return MM_DOUBLY_AUG;
-            case P_DOUBLY_DIM:
-                return P_DIM;
-            case P_DIM:
-                return PERFECT;
-            case PERFECT:
-                return P_AUG;
-            case P_AUG:
-                return P_DOUBLY_AUG;
-            default:
-                return null;
+            int mmIndex = MM_QUALITIES.indexOf(this);
+            if (mmIndex == MM_QUALITIES.size() - 1)
+            {
+                throw new IllegalStateException();
+            }
+            return MM_QUALITIES.get(mmIndex + 1);
+        }
+        else
+        {
+            int pIndex = P_QUALITIES.indexOf(this);
+            if (pIndex == P_QUALITIES.size() - 1)
+            {
+                throw new IllegalStateException();
+            }
+            return P_QUALITIES.get(pIndex + 1);
         }
     }
 }

@@ -3,11 +3,17 @@ package main.java.org.lucjross.jmtl.interval;
 /**
  * Created by lucas on 11/17/2014.
  *
- * The order of this is important as {@link #UNISON} should have index 0 in {@link #values()},
- * {@link #OCTAVE} should have index 7, etc.
+ * <p>The order of this is important as {@link #UNISON} should have index 0 in
+ * {@link #values()}, {@link #OCTAVE} should have index 7, etc.
+ *
+ * <p>Intervals are defined only up to the fifteenth (two octaves) because
+ * it isn't typically of any use to refer to a larger compound interval by its
+ * ordinal. Operations on larger intervals should take advantage of
+ * octave equivalence.
  */
 public enum IntervalNumber
 {
+
     UNISON(IntervalQualityType.PERFECT, 0),
     SECOND(IntervalQualityType.MAJOR_MINOR, 1, 2),
     THIRD(IntervalQualityType.MAJOR_MINOR, 3, 4),
@@ -58,8 +64,9 @@ public enum IntervalNumber
     }
 
     /**
-     * Returns whether this interval is {@link #OCTAVE} or higher. This is contrary to the usual definition
-     * of a compound interval but is more useful here.
+     * Returns whether this interval is {@link #OCTAVE} or higher. This is
+     * contrary to the usual definition of a compound interval but is more
+     * useful here.
      *
      * @return  true if this is a compound interval.
      */
